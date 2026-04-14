@@ -2,7 +2,7 @@ Peace is a modern, emotion-aware mental health web application that helps users 
 
 The app dynamically adapts UI colours, sound visualisations, and recommendations based on the user’s mood, creating a soothing and personalised experience.
 
- Features
+ ** Features
 
  Mood-Based Music Therapy
 
