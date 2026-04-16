@@ -32,6 +32,7 @@ const authRoutes = require('./routes/authRoutes');
 const journalRoutes = require('./routes/journalRoutes');
 const musicRoutes = require('./routes/musicRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
+const moodConfigRoutes = require('./routes/moodConfigRoutes');
 
 // Basic Route
 app.get('/', (req, res) => {
@@ -44,6 +45,8 @@ app.use('/api/mood', moodRoutes);
 app.use('/api/journal', journalRoutes);
 app.use('/api/music', musicRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/mood-configs', moodConfigRoutes);
+
 
 // Error Handling Middleware
 app.use(notFound);

@@ -68,84 +68,84 @@ export function BreathingExercise({ onNavigate }: BreathingExerciseProps) {
   };
 
   return (
-    <div className="relative z-10 min-h-screen flex flex-col">
+    <div className="relative z-10 min-h-screen flex flex-col font-sans">
       {/* Header */}
       <div className="px-5 py-6 flex items-center justify-between">
         <button
           onClick={() => onNavigate('home')}
-          className="text-white/60 hover:text-white/90 transition-colors p-2 -ml-2"
+          className="text-[#5C5C5C]/60 hover:text-[#2D2D2D] transition-colors p-2 -ml-2"
         >
           <ArrowLeft className="w-6 h-6" />
         </button>
-        <h2 className="text-white/90">Breathing Exercise</h2>
+        <h2 className="text-[#2D2D2D] font-serif font-bold">Breathing Exercise</h2>
         <div className="w-10" />
       </div>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center justify-center px-5 pb-24">
         {/* Breathing Orb */}
-        <div className="relative w-full max-w-md aspect-square flex items-center justify-center mb-12">
+        <div className="relative w-full max-w-sm aspect-square flex items-center justify-center mb-16">
           {/* Outer glow ring */}
           <motion.div
             className="absolute w-full h-full rounded-full"
             animate={{
               scale: isPlaying ? orbScale[phase] : 1,
-              opacity: isPlaying ? 0.2 : 0.1
+              opacity: isPlaying ? 0.3 : 0.1
             }}
             transition={{
               duration: phaseDurations[phase],
               ease: phase === 'exhale' ? 'easeInOut' : 'easeIn'
             }}
             style={{
-              background: 'radial-gradient(circle, rgba(143, 211, 255, 0.3), transparent)'
+              background: 'radial-gradient(circle, rgba(139, 168, 136, 0.4), transparent)'
             }}
           />
 
           {/* Middle ring */}
           <motion.div
-            className="absolute w-[85%] h-[85%] rounded-full"
+            className="absolute w-[80%] h-[80%] rounded-full"
             animate={{
               scale: isPlaying ? orbScale[phase] : 1,
-              opacity: isPlaying ? 0.4 : 0.2
+              opacity: isPlaying ? 0.5 : 0.2
             }}
             transition={{
               duration: phaseDurations[phase],
               ease: phase === 'exhale' ? 'easeInOut' : 'easeIn'
             }}
             style={{
-              background: 'radial-gradient(circle, rgba(166, 139, 255, 0.4), transparent)'
+              background: 'radial-gradient(circle, rgba(139, 168, 136, 0.5), transparent)'
             }}
           />
 
           {/* Inner orb */}
           <motion.div
-            className="absolute w-[60%] h-[60%] rounded-full backdrop-blur-md bg-gradient-to-br from-[#8FD3FF]/40 to-[#A68BFF]/40 border border-white/20"
+            className="absolute w-[50%] h-[50%] rounded-full backdrop-blur-md bg-white/40 border border-white/60 shadow-xl"
             animate={{
               scale: isPlaying ? orbScale[phase] : 1,
-              opacity: isPlaying ? orbOpacity[phase] : 0.5
+              opacity: isPlaying ? orbOpacity[phase] : 0.6
             }}
             transition={{
               duration: phaseDurations[phase],
               ease: phase === 'exhale' ? 'easeInOut' : 'easeIn'
             }}
             style={{
-              boxShadow: '0 20px 60px rgba(143, 211, 255, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2)'
+              boxShadow: '0 24px 80px rgba(139, 168, 136, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.5)'
             }}
           />
 
           {/* Center core */}
           <motion.div
-            className="absolute w-[30%] h-[30%] rounded-full bg-gradient-to-br from-[#8FD3FF] to-[#A68BFF]"
+            className="absolute w-[25%] h-[25%] rounded-full bg-gradient-to-br from-[#8BA888] to-[#7A9777]"
             animate={{
               scale: isPlaying ? orbScale[phase] * 0.8 : 1,
-              opacity: isPlaying ? 1 : 0.7
+              opacity: isPlaying ? 1 : 0.8
             }}
             transition={{
               duration: phaseDurations[phase],
               ease: phase === 'exhale' ? 'easeInOut' : 'easeIn'
             }}
             style={{
-              boxShadow: '0 10px 40px rgba(143, 211, 255, 0.5)'
+              boxShadow: '0 12px 40px rgba(139, 168, 136, 0.4)'
             }}
           />
         </div>
@@ -154,19 +154,19 @@ export function BreathingExercise({ onNavigate }: BreathingExerciseProps) {
         <AnimatePresence mode="wait">
           <motion.div
             key={phase}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-            className="text-center mb-8"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.1 }}
+            transition={{ duration: 0.4 }}
+            className="text-center mb-10 h-24 flex flex-col items-center"
           >
-            <h1 className="text-white mb-2">{phaseText[phase]}</h1>
+            <h1 className="text-[#2D2D2D] text-4xl mb-3 font-serif italic">{phaseText[phase]}</h1>
             {isPlaying && (
               <motion.p
                 key={countdown}
                 initial={{ scale: 1.2, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="text-white/60 text-3xl"
+                className="text-[#8BA888] text-4xl font-bold font-serif"
               >
                 {countdown}
               </motion.p>
@@ -179,15 +179,12 @@ export function BreathingExercise({ onNavigate }: BreathingExerciseProps) {
           onClick={handlePlayPause}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="backdrop-blur-md bg-white/10 border border-white/20 rounded-full w-20 h-20 flex items-center justify-center hover:bg-white/15 transition-all duration-300"
-          style={{
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
-          }}
+          className="backdrop-blur-md bg-[#2D2D2D] text-white rounded-full w-24 h-24 flex items-center justify-center hover:bg-black transition-all duration-300 shadow-2xl shadow-black/10"
         >
           {isPlaying ? (
-            <Pause className="w-8 h-8 text-white/90" fill="currentColor" />
+            <Pause className="w-10 h-10 text-white/90" fill="currentColor" />
           ) : (
-            <Play className="w-8 h-8 text-white/90 ml-1" fill="currentColor" />
+            <Play className="w-10 h-10 text-white/90 ml-1" fill="currentColor" />
           )}
         </motion.button>
 
@@ -197,12 +194,13 @@ export function BreathingExercise({ onNavigate }: BreathingExerciseProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="text-white/50 text-center mt-8 max-w-sm"
+            className="text-[#5C5C5C]/60 text-center mt-12 max-w-sm italic font-medium"
           >
-            Find a comfortable position. Press play to begin your breathing practice.
+            Find a comfortable position. Press play to begin your rhythmic breathing practice.
           </motion.p>
         )}
       </div>
     </div>
   );
 }
+

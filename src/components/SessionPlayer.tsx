@@ -1,46 +1,68 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ArrowLeft, Play, Pause, SkipBack, SkipForward } from 'lucide-react';
-import { Screen } from '../App';
+import { Screen, MusicTrack } from '../types';
 
 interface SessionPlayerProps {
   onNavigate: (screen: Screen) => void;
-  sessionTitle: string;
+  track: MusicTrack;
 }
 
-export function SessionPlayer({ onNavigate, sessionTitle }: SessionPlayerProps) {
+export function SessionPlayer({ onNavigate, track }: SessionPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
-  const duration = 600; // 10 minutes in seconds
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [audio] = useState(new Audio());
 
   useEffect(() => {
-    if (!isPlaying) return;
+    if (track) {
+      audio.src = track.fileUrl;
+      audio.load();
+      setIsPlaying(true);
+    }
+  }, [track, audio]);
 
-    const interval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 100) {
-          setIsPlaying(false);
-          return 100;
-        }
-        return prev + (100 / duration);
-      });
-    }, 1000);
+  useEffect(() => {
+    if (isPlaying) {
+      audio.play().catch(err => console.error("Playback failed:", err));
+    } else {
+      audio.pause();
+    }
+  }, [isPlaying, audio]);
 
-    return () => clearInterval(interval);
-  }, [isPlaying]);
+  useEffect(() => {
+    const handleTimeUpdate = () => {
+      setCurrentTime(audio.currentTime);
+      setDuration(audio.duration || 0);
+      setProgress((audio.currentTime / (audio.duration || 1)) * 100);
+    };
+
+    const handleEnded = () => {
+      setIsPlaying(false);
+      setProgress(0);
+    };
+
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+    audio.addEventListener('ended', handleEnded);
+
+    return () => {
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
+      audio.removeEventListener('ended', handleEnded);
+      audio.pause();
+    };
+  }, [audio]);
 
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
   };
 
   const formatTime = (seconds: number) => {
+    if (isNaN(seconds)) return "0:00";
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
-
-  const currentTime = (progress / 100) * duration;
-  const remainingTime = duration - currentTime;
 
   return (
     <div className="relative z-10 min-h-screen flex flex-col">
@@ -102,42 +124,43 @@ export function SessionPlayer({ onNavigate, sessionTitle }: SessionPlayerProps) 
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <h1 className="text-white mb-2">{sessionTitle || 'Meditation Session'}</h1>
-          <p className="text-white/60">{formatTime(duration)}</p>
+          <h1 className="text-white text-3xl font-serif mb-2">{track.title}</h1>
+          <p className="text-white/60 uppercase tracking-widest text-xs font-bold">{track.category}</p>
         </motion.div>
 
         {/* Progress Bar */}
         <div className="w-full max-w-md mb-8">
-          <div className="relative h-2 bg-white/5 rounded-full overflow-hidden backdrop-blur-sm">
+          <div className="relative h-1.5 bg-white/10 rounded-full overflow-hidden backdrop-blur-sm">
             <motion.div
               className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#8FD3FF] to-[#A68BFF]"
               style={{ width: `${progress}%` }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.1 }}
             />
           </div>
-          <div className="flex justify-between mt-2 text-white/50">
+          <div className="flex justify-between mt-3 text-white/40 text-xs font-medium font-mono">
             <span>{formatTime(currentTime)}</span>
-            <span>-{formatTime(remainingTime)}</span>
+            <span>{track.duration}</span>
           </div>
         </div>
 
         {/* Controls */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-10">
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            className="text-white/60 hover:text-white/90 transition-colors"
+            className="text-white/40 hover:text-white/90 transition-colors"
           >
-            <SkipBack className="w-6 h-6" />
+            <SkipBack className="w-8 h-8" />
           </motion.button>
 
           <motion.button
             onClick={handlePlayPause}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="backdrop-blur-md bg-white/10 border border-white/20 rounded-full w-20 h-20 flex items-center justify-center hover:bg-white/15 transition-all duration-300"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-full w-24 h-24 flex items-center justify-center hover:bg-white/20 transition-all duration-300 shadow-2xl shadow-black/20"
             style={{
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
+              inset: '0px',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
             }}
           >
             {isPlaying ? (
@@ -150,12 +173,13 @@ export function SessionPlayer({ onNavigate, sessionTitle }: SessionPlayerProps) 
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            className="text-white/60 hover:text-white/90 transition-colors"
+            className="text-white/40 hover:text-white/90 transition-colors"
           >
-            <SkipForward className="w-6 h-6" />
+            <SkipForward className="w-8 h-8" />
           </motion.button>
         </div>
       </div>
     </div>
   );
 }
+

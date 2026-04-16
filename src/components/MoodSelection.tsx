@@ -1,12 +1,13 @@
 import { motion } from 'motion/react';
-import { Mood, moodConfigs } from './MoodBasedMusicTherapy';
+import { Mood, MoodConfig } from './MoodBasedMusicTherapy';
 
 interface MoodSelectionProps {
   onMoodSelect: (mood: Mood) => void;
+  moodConfigs: Record<string, MoodConfig>;
 }
 
-export function MoodSelection({ onMoodSelect }: MoodSelectionProps) {
-  const moods: Mood[] = ['calm', 'happy', 'anxious', 'sad', 'tired'];
+export function MoodSelection({ onMoodSelect, moodConfigs }: MoodSelectionProps) {
+  const moods = Object.keys(moodConfigs);
 
   return (
     <div className="px-5 lg:px-12 pb-12">
@@ -16,8 +17,8 @@ export function MoodSelection({ onMoodSelect }: MoodSelectionProps) {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <h1 className="text-white/90 mb-3">How are you feeling?</h1>
-          <p className="text-white/60 max-w-md mx-auto">
+          <h1 className="text-[#2D2D2D] mb-3 font-serif tracking-tight">How are you feeling?</h1>
+          <p className="text-[#5C5C5C] max-w-md mx-auto">
             Choose your current mood to receive personalized music therapy
           </p>
         </motion.div>
@@ -35,14 +36,14 @@ export function MoodSelection({ onMoodSelect }: MoodSelectionProps) {
                 whileHover={{ scale: 1.03, y: -4 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => onMoodSelect(mood)}
-                className="backdrop-blur-md bg-white/10 border border-white/20 rounded-[24px] p-6 hover:bg-white/15 transition-all duration-300 text-center"
+                className="backdrop-blur-md bg-white/40 border border-white/60 rounded-[32px] p-6 hover:bg-white/50 transition-all duration-300 text-center"
                 style={{
-                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)'
+                  boxShadow: '0 8px 32px rgba(139, 168, 136, 0.1)'
                 }}
               >
                 <div className="text-5xl mb-3">{config.emoji}</div>
-                <h3 className="text-white/90 mb-1">{config.label}</h3>
-                <p className="text-white/60 text-sm">{config.description}</p>
+                <h3 className="text-[#2D2D2D] mb-1 font-serif">{config.label}</h3>
+                <p className="text-[#5C5C5C] text-sm">{config.description}</p>
 
                 {/* Color indicator */}
                 <div className="mt-4 flex justify-center">
@@ -69,14 +70,14 @@ export function MoodSelection({ onMoodSelect }: MoodSelectionProps) {
                 whileHover={{ scale: 1.05, y: -8 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => onMoodSelect(mood)}
-                className="backdrop-blur-md bg-white/10 border border-white/20 rounded-[24px] p-8 hover:bg-white/15 transition-all duration-300 text-center"
+                className="backdrop-blur-md bg-white/40 border border-white/60 rounded-[32px] p-8 hover:bg-white/50 transition-all duration-300 text-center"
                 style={{
-                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)'
+                  boxShadow: '0 8px 32px rgba(139, 168, 136, 0.1)'
                 }}
               >
                 <div className="text-6xl mb-4">{config.emoji}</div>
-                <h3 className="text-white/90 mb-2">{config.label}</h3>
-                <p className="text-white/60 text-sm mb-4">{config.description}</p>
+                <h3 className="text-[#2D2D2D] mb-2 font-serif">{config.label}</h3>
+                <p className="text-[#5C5C5C] text-sm mb-4">{config.description}</p>
 
                 {/* Color indicator */}
                 <div className="flex justify-center">
@@ -98,7 +99,7 @@ export function MoodSelection({ onMoodSelect }: MoodSelectionProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
-          className="text-white/40 text-center mt-8 text-sm"
+          className="text-[#5C5C5C]/60 text-center mt-8 text-sm"
         >
           There's no wrong answer — just choose what feels right
         </motion.p>
@@ -106,3 +107,4 @@ export function MoodSelection({ onMoodSelect }: MoodSelectionProps) {
     </div>
   );
 }
+
