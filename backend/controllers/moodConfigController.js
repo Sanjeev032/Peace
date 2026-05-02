@@ -30,7 +30,47 @@ const updateMoodConfig = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Create a mood configuration
+// @route   POST /api/mood-configs
+// @access  Private/Admin
+const createMoodConfig = asyncHandler(async (req, res) => {
+  const { id, label, emoji, gradient, solidColor, description } = req.body;
+
+  const config = await MoodConfig.create({
+    id,
+    label,
+    emoji,
+    gradient,
+    solidColor,
+    description,
+  });
+
+  if (config) {
+    res.status(201).json(config);
+  } else {
+    res.status(400);
+    throw new Error('Invalid mood config data');
+  }
+});
+
+// @desc    Delete a mood configuration
+// @route   DELETE /api/mood-configs/:id
+// @access  Private/Admin
+const deleteMoodConfig = asyncHandler(async (req, res) => {
+  const config = await MoodConfig.findOne({ id: req.params.id });
+
+  if (config) {
+    await config.deleteOne();
+    res.json({ message: 'Mood configuration removed' });
+  } else {
+    res.status(404);
+    throw new Error('Mood configuration not found');
+  }
+});
+
 module.exports = {
   getMoodConfigs,
   updateMoodConfig,
+  createMoodConfig,
+  deleteMoodConfig,
 };

@@ -58,7 +58,25 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Admin login
+// @route   POST /api/auth/admin-login
+// @access  Public
+const adminLogin = asyncHandler(async (req, res) => {
+  const { password } = req.body;
+
+  if (password === process.env.ADMIN_PASSWORD) {
+    res.json({
+      message: 'Admin authenticated',
+      token: generateToken('admin'),
+    });
+  } else {
+    res.status(401);
+    throw new Error('Invalid Admin Password');
+  }
+});
+
 module.exports = {
   registerUser,
   loginUser,
+  adminLogin,
 };

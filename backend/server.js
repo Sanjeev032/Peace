@@ -6,8 +6,9 @@ const morgan = require('morgan');
 const connectDB = require('./config/db');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
+const path = require('path');
 // Load environment variables
-dotenv.config();
+dotenv.config({ path: path.join(__dirname, '.env') });
 
 // Connect to Database
 connectDB();
@@ -33,6 +34,7 @@ const journalRoutes = require('./routes/journalRoutes');
 const musicRoutes = require('./routes/musicRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
 const moodConfigRoutes = require('./routes/moodConfigRoutes');
+const quizRoutes = require('./routes/quizRoutes');
 
 // Basic Route
 app.get('/', (req, res) => {
@@ -46,6 +48,7 @@ app.use('/api/journal', journalRoutes);
 app.use('/api/music', musicRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/mood-configs', moodConfigRoutes);
+app.use('/api/quiz', quizRoutes);
 
 
 // Error Handling Middleware

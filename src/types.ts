@@ -1,4 +1,11 @@
-export type Screen = "home" | "breathing" | "journal" | "mood-history" | "music-therapy" | "player" | "admin";
+export type Screen = "auth" | "home" | "breathing" | "journal" | "mood-history" | "music-therapy" | "player" | "admin" | "quiz";
+
+export interface User {
+  _id: string;
+  email: string;
+  token: string;
+  role: 'user' | 'admin';
+}
 
 export type MoodConfig = {
   _id: string;
@@ -19,3 +26,17 @@ export type MusicTrack = {
   moods: string[];
   fileUrl: string;
 };
+
+export interface QuizOption {
+  _id?: string;
+  text: string;
+  moodImpact: string;
+  scoreValue: number;
+}
+
+export interface QuizQuestion {
+  _id: string;
+  questionText: string;
+  options: QuizOption[];
+  order: number;
+}

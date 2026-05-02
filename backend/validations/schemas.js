@@ -41,9 +41,16 @@ const moodSchema = Joi.object({
   }),
 });
 
+const adminLoginSchema = Joi.object({
+  password: Joi.string().required().messages({
+    'string.empty': 'Password is required',
+  }),
+});
+
 module.exports = {
   registerSchema,
   loginSchema,
   journalSchema,
   moodSchema,
+  adminLoginSchema,
 };

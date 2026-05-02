@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { Play } from 'lucide-react';
-import { MusicTrack } from './MoodBasedMusicTherapy';
+import { MusicTrack } from '../types';
 
 interface MoodMusicCardProps {
   track: MusicTrack;

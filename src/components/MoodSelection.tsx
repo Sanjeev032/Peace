@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
-import { Mood, MoodConfig } from './MoodBasedMusicTherapy';
+import { MoodConfig } from '../types';
+import { Mood } from './MoodBasedMusicTherapy';
 
 interface MoodSelectionProps {
   onMoodSelect: (mood: Mood) => void;

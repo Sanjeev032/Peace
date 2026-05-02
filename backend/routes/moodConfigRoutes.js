@@ -1,13 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const {
-  getMoodConfigs,
-  updateMoodConfig,
-} = require('../controllers/moodConfigController');
 const { protect } = require('../middleware/authMiddleware');
 const { admin } = require('../middleware/adminMiddleware');
+const {
+  getMoodConfigs,
+  createMoodConfig,
+  updateMoodConfig,
+  deleteMoodConfig,
+} = require('../controllers/moodConfigController');
 
-router.get('/', getMoodConfigs);
-router.put('/:id', protect, admin, updateMoodConfig);
+router.route('/')
+  .get(getMoodConfigs)
+  .post(protect, admin, createMoodConfig);
+
+router.route('/:id')
+  .put(protect, admin, updateMoodConfig)
+  .delete(protect, admin, deleteMoodConfig);
 
 module.exports = router;

@@ -1,18 +1,21 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, Play, Pause, SkipBack, SkipForward, Volume2, Loader2, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Play, Pause, SkipBack, SkipForward, Volume2, Loader2, AlertCircle, Music2 } from 'lucide-react';
 import { fetchMoodConfigs, fetchMusicByMood, createMoodEntry } from '../services/api';
 import { Screen, MoodConfig, MusicTrack } from '../types';
+import { MoodSelection } from './MoodSelection';
+import { MoodMusicCard } from './MoodMusicCard';
 
 interface MoodBasedMusicTherapyProps {
   onNavigate: (screen: Screen) => void;
+  initialMood?: string | null;
 }
 
 export type Mood = string;
 
-export function MoodBasedMusicTherapy({ onNavigate }: MoodBasedMusicTherapyProps) {
+export function MoodBasedMusicTherapy({ onNavigate, initialMood = null }: MoodBasedMusicTherapyProps) {
   const [moodConfigs, setMoodConfigs] = useState<Record<string, MoodConfig>>({});
-  const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
+  const [selectedMood, setSelectedMood] = useState<Mood | null>(initialMood);
   const [musicLibrary, setMusicLibrary] = useState<MusicTrack[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,6 +31,10 @@ export function MoodBasedMusicTherapy({ onNavigate }: MoodBasedMusicTherapyProps
     const loadConfigs = async () => {
       try {
         const configs = await fetchMoodConfigs();
+        if (!configs || configs.length === 0) {
+          setError('No mood configurations found. Please contact admin.');
+          return;
+        }
         const configMap = configs.reduce((acc: any, config: MoodConfig) => {
           acc[config.id] = config;
           return acc;
@@ -140,7 +147,7 @@ export function MoodBasedMusicTherapy({ onNavigate }: MoodBasedMusicTherapyProps
     setIsPlaying(!isPlaying);
   };
 
-  const filteredTracks = musicLibrary; // Already filtered by API
+  const filteredTracks = musicLibrary || []; // Safety check
 
   const currentMoodConfig = selectedMood ? moodConfigs[selectedMood] : null;
 
@@ -363,20 +370,27 @@ export function MoodBasedMusicTherapy({ onNavigate }: MoodBasedMusicTherapyProps
                   {/* Music recommendations */}
                   <div className="space-y-3">
                     <h3 className="text-[#2D2D2D] mb-4 font-serif">Recommended for you</h3>
-                    {filteredTracks.map((track, index) => (
-                      <motion.div
-                        key={track._id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                      >
-                        <MoodMusicCard
-                          track={track}
-                          moodColor={currentMoodConfig?.solidColor || '#8BA888'}
-                          onSelect={() => handleTrackSelect(track)}
-                        />
-                      </motion.div>
-                    ))}
+                    {filteredTracks.length === 0 ? (
+                      <div className="p-8 text-center bg-white/5 rounded-3xl border border-white/10">
+                         <Music2 className="w-12 h-12 text-white/20 mx-auto mb-4" />
+                         <p className="text-white/40">No tracks found for this mood yet.</p>
+                      </div>
+                    ) : (
+                      filteredTracks.map((track, index) => (
+                        <motion.div
+                          key={track._id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                        >
+                          <MoodMusicCard
+                            track={track}
+                            moodColor={currentMoodConfig?.solidColor || '#8BA888'}
+                            onSelect={() => handleTrackSelect(track)}
+                          />
+                        </motion.div>
+                      ))
+                    )}
                   </div>
                 </>
               )}
@@ -521,21 +535,28 @@ export function MoodBasedMusicTherapy({ onNavigate }: MoodBasedMusicTherapyProps
                 <div className="space-y-6">
                   <h3 className="text-[#2D2D2D] font-serif text-xl border-b border-[#2D2D2D]/5 pb-4">Recommended for you</h3>
                   <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2 custom-scrollbar">
-                    {filteredTracks.map((track, index) => (
-                      <motion.div
-                        key={track._id}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                      >
-                        <MoodMusicCard
-                          track={track}
-                          moodColor={currentMoodConfig?.solidColor || '#8BA888'}
-                          onSelect={() => handleTrackSelect(track)}
-                          isActive={selectedTrack?._id === track._id}
-                        />
-                      </motion.div>
-                    ))}
+                    {filteredTracks.length === 0 ? (
+                      <div className="p-12 text-center bg-white/5 rounded-[32px] border border-white/10">
+                         <Music2 className="w-16 h-16 text-white/10 mx-auto mb-4" />
+                         <p className="text-white/30 text-lg">Your sanctuary is still being prepared. <br/> Check back soon for new sounds.</p>
+                      </div>
+                    ) : (
+                      filteredTracks.map((track, index) => (
+                        <motion.div
+                          key={track._id}
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                        >
+                          <MoodMusicCard
+                            track={track}
+                            moodColor={currentMoodConfig?.solidColor || '#8BA888'}
+                            onSelect={() => handleTrackSelect(track)}
+                            isActive={selectedTrack?._id === track._id}
+                          />
+                        </motion.div>
+                      ))
+                    )}
                   </div>
                 </div>
               </div>
